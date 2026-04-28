@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico Financiero de tu Negocio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0B1929;--bg2:#0F2035;--bg3:#132840;
+  --teal:#00D6BC;--green:#50EEA2;--vibrant:#06ECD0;
+  --white:#FFFFFF;--light:#CBD5E1;--muted:#64748B;
+  --card:#132840;--card-border:rgba(0,214,188,.15);
+  --glow:rgba(0,214,188,.08);
+  --red:#EF4444;--amber:#F59E0B;--ok:#22C55E;
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--light);min-height:100vh}
+h1,h2,h3,.headline{font-family:'Lexend',sans-serif}
+
+/* Toolbar */
+.toolbar{background:#070E18;border-bottom:1px solid rgba(0,214,188,.1);padding:14px 32px;position:sticky;top:0;z-index:50}
+.tb-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.toolbar label{font-size:11px;color:var(--teal);font-weight:600;text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:4px}
+.toolbar input[type=text]{padding:6px 12px;border:1px solid rgba(0,214,188,.2);border-radius:8px;background:rgba(0,214,188,.05);color:var(--white);font-size:13px;font-family:inherit;width:180px;outline:none}
+.toolbar input[type=text]:focus{border-color:var(--teal)}
+.toolbar select{padding:6px 12px;border:1px solid rgba(0,214,188,.2);border-radius:8px;background:rgba(0,214,188,.05);color:var(--white);font-size:13px;font-family:inherit;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2300D6BC' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.toolbar select option{background:#0B1929;color:#fff}
+.tb-toggle{padding:6px 16px;background:transparent;border:1px solid rgba(0,214,188,.3);color:var(--teal);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.tb-toggle:hover{background:rgba(0,214,188,.1)}
+.tb-pdf{padding:6px 20px;background:var(--teal);border:none;color:var(--bg);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Lexend',sans-serif;transition:all .2s}
+.tb-pdf:hover{filter:brightness(1.1)}
+.tb-custom{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid rgba(0,214,188,.1)}
+.color-pick{display:flex;align-items:center;gap:6px}
+.color-pick input[type=color]{width:28px;height:28px;border:1px solid rgba(0,214,188,.2);border-radius:6px;cursor:pointer;background:none;padding:0}
+.color-pick span{font-size:12px;color:var(--muted);font-family:monospace}
+.toolbar .note{font-size:11px;color:var(--muted);width:100%;margin-top:8px}
+
+.page{max-width:840px;margin:0 auto;overflow:hidden}
+
+/* Header */
+.header{position:relative;padding:48px 56px;overflow:hidden}
+.header::before{content:'';position:absolute;bottom:0;left:0;right:0;height:100%;background:linear-gradient(180deg,transparent 0%,rgba(0,214,188,.04) 100%)}
+.header-top{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
+.header-text{flex:1}
+.logo-box{width:80px;height:80px;border-radius:12px;border:2px dashed rgba(0,214,188,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;font-size:11px;color:var(--muted);flex-shrink:0;transition:border-color .3s}
+.logo-box:hover{border-color:var(--teal)}
+.logo-box img{width:100%;height:100%;object-fit:contain}
+.header h1{font-size:32px;font-weight:800;color:var(--white);line-height:1.2;margin-bottom:8px}
+.header h1 em{font-style:normal;color:var(--teal)}
+.header .sub{font-size:15px;color:var(--muted);line-height:1.6}
+.header .sub strong{color:var(--light)}
+.header-meta{position:relative;z-index:1;display:flex;gap:24px;margin-top:24px}
+.meta-item{padding:12px 20px;background:var(--card);border:1px solid var(--card-border);border-radius:10px;font-size:13px;flex:1}
+.meta-item .meta-label{font-size:11px;color:var(--teal);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.meta-item .meta-value{color:var(--white);font-weight:600}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,214,188,.2),transparent);margin:0 56px}
+
+/* Intro */
+.intro{padding:24px 56px;font-size:14px;color:var(--muted);line-height:1.7;background:rgba(0,214,188,.02);border-bottom:1px solid rgba(0,214,188,.06)}
+
+/* Categories */
+.cat-section{padding:32px 56px}
+.cat-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.cat-icon{width:36px;height:36px;border-radius:10px;background:rgba(0,214,188,.1);border:1px solid rgba(0,214,188,.2);display:flex;align-items:center;justify-content:center;font-size:18px}
+.cat-name{font-family:'Lexend',sans-serif;font-size:18px;font-weight:700;color:var(--white)}
+.cat-count{font-size:12px;color:var(--muted);font-weight:500;margin-left:auto}
+
+.q-row{display:grid;grid-template-columns:1fr auto 20px;align-items:center;gap:12px;padding:14px 16px;border-radius:10px;margin-bottom:6px;transition:all .15s;border:1px solid transparent}
+.q-row:nth-child(odd){background:rgba(0,214,188,.02)}
+.q-row:hover{background:rgba(0,214,188,.05);border-color:var(--card-border)}
+.q-text{font-size:14px;line-height:1.6;color:var(--light)}
+.q-opts{display:flex;gap:4px}
+.q-opt{padding:5px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid rgba(0,214,188,.15);background:transparent;color:var(--muted);transition:all .15s;user-select:none;font-family:inherit}
+.q-opt:hover{border-color:rgba(0,214,188,.4);color:var(--light)}
+.q-opt.sel-yes{background:rgba(34,197,94,.12);border-color:var(--ok);color:var(--ok)}
+.q-opt.sel-no{background:rgba(239,68,68,.12);border-color:var(--red);color:var(--red)}
+.q-opt.sel-na{background:rgba(100,116,139,.1);border-color:var(--muted);color:var(--muted)}
+.q-risk{width:14px;height:14px;border-radius:50%;background:rgba(0,214,188,.08);transition:background .3s}
+
+/* Impact section */
+.impact{padding:24px 56px}
+.impact-title{font-family:'Lexend',sans-serif;font-size:14px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px}
+.impact-items{display:flex;flex-direction:column;gap:8px}
+.impact-item{padding:14px 16px;background:var(--card);border:1px solid var(--card-border);border-radius:10px;font-size:13px;color:var(--light);line-height:1.6;display:none}
+.impact-item.visible{display:flex;gap:10px;align-items:flex-start}
+.impact-dot{min-width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0}
+.impact-empty{font-size:13px;color:var(--muted);font-style:italic}
+
+/* Score */
+.score-section{padding:40px 56px;text-align:center}
+.score-ring-wrap{margin-bottom:16px}
+.score-label{font-family:'Lexend',sans-serif;font-size:18px;font-weight:700;padding:8px 24px;border-radius:24px;display:inline-block;margin-bottom:8px}
+.score-hint{font-size:14px;color:var(--muted);line-height:1.6;max-width:480px;margin:0 auto}
+
+/* Notes */
+.notes{padding:24px 56px}
+.notes label{font-family:'Lexend',sans-serif;font-size:14px;font-weight:700;color:var(--white);margin-bottom:8px;display:block}
+.notes textarea{width:100%;height:100px;border:1.5px solid var(--card-border);border-radius:12px;padding:14px;font-family:inherit;font-size:14px;resize:vertical;color:var(--light);background:var(--card);outline:none;transition:border-color .2s}
+.notes textarea:focus{border-color:var(--teal)}
+
+/* CTA */
+.cta-section{padding:40px 56px;text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(180deg,var(--bg) 0%,rgba(0,214,188,.08) 100%)}
+.cta-content{position:relative;z-index:1}
+.cta-content h2{font-size:24px;font-weight:700;color:var(--white);margin-bottom:8px}
+.cta-content p{font-size:15px;color:var(--muted);margin-bottom:24px;line-height:1.7}
+.cta-btn{display:inline-block;padding:14px 40px;background:var(--teal);color:var(--bg);font-size:16px;font-weight:700;border-radius:12px;text-decoration:none;font-family:'Lexend',sans-serif;border:none;cursor:pointer;transition:all .2s}
+.cta-btn:hover{background:var(--vibrant)}
+.cta-contact{margin-top:20px;font-size:14px;color:var(--light);line-height:2}
+
+.footer{padding:16px 56px;text-align:center;font-size:12px;color:var(--muted);border-top:1px solid rgba(0,214,188,.1)}
+
+[contenteditable=true]{outline:none;border-bottom:1px dashed transparent;transition:all .2s}
+[contenteditable=true]:hover{border-bottom-color:rgba(0,214,188,.3)}
+[contenteditable=true]:focus{border-bottom-color:var(--teal);background:rgba(0,214,188,.03);border-radius:4px;padding:0 4px;margin:0 -4px}
+
+@media print{
+  .toolbar{display:none!important}
+  body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .page{max-width:100%}
+  .cat-section{page-break-inside:avoid}
+  .score-section{page-break-inside:avoid}
+  [contenteditable=true]{border-bottom:none!important}
+  [contenteditable=true]:hover{background:none!important}
+}
+@media(max-width:700px){
+  .header,.cat-section,.intro,.impact,.score-section,.notes,.cta-section,.footer{padding-left:24px;padding-right:24px}
+  .header h1{font-size:24px}
+  .header-meta{flex-direction:column;gap:8px}
+  .q-row{grid-template-columns:1fr;gap:8px}
+  .q-opts{justify-self:start}
+  .divider{margin:0 24px}
+}
+</style>
+</head>
+<body>
+
+<!-- Toolbar -->
+<div class="toolbar" id="toolbar">
+  <div class="tb-row">
+    <div><label>Tu nombre</label><input type="text" id="cfg-name" value="Tu Nombre" oninput="updateMeta()"></div>
+    <div><label>Cliente</label><input type="text" id="cfg-client" value="[Nombre de la Empresa]" oninput="updateMeta()"></div>
+    <div><label>Tema de color</label>
+      <select id="theme-select" onchange="applyTheme(this.value)">
+        <option value="supercontador">Supercontador (oscuro)</option>
+        <option value="clasico">Profesional clásico (claro)</option>
+        <option value="azul">Azul corporativo</option>
+        <option value="verde">Verde confianza</option>
+        <option value="custom">Personalizado...</option>
+      </select>
+    </div>
+    <button class="tb-toggle" onclick="toggleCustom()">Personalizar colores</button>
+    <button class="tb-pdf" onclick="downloadPDF()">Descargar PDF</button>
+  </div>
+  <div class="tb-custom" id="custom-panel" style="display:none">
+    <div><label>Fondo</label><div class="color-pick"><input type="color" id="c-bg" value="#0B1929" oninput="applyCustom()"><span id="c-bg-hex">#0B1929</span></div></div>
+    <div><label>Acento</label><div class="color-pick"><input type="color" id="c-accent" value="#00D6BC" oninput="applyCustom()"><span id="c-accent-hex">#00D6BC</span></div></div>
+    <div><label>Cards</label><div class="color-pick"><input type="color" id="c-card" value="#132840" oninput="applyCustom()"><span id="c-card-hex">#132840</span></div></div>
+    <div><label>Texto</label><div class="color-pick"><input type="color" id="c-text" value="#FFFFFF" oninput="applyCustom()"><span id="c-text-hex">#FFFFFF</span></div></div>
+    <div><label>Secundario</label><div class="color-pick"><input type="color" id="c-muted" value="#94A3B8" oninput="applyCustom()"><span id="c-muted-hex">#94A3B8</span></div></div>
+  </div>
+  <p class="note">Edita cualquier texto haciendo clic. El puntaje se calcula automáticamente. Esta barra no aparece al imprimir ni en el PDF.</p>
+</div>
+
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-text">
+        <h1 contenteditable="true">Diagnóstico Financiero<br>de <em>tu Negocio</em></h1>
+        <p class="sub" contenteditable="true">Evaluación rápida preparada por <strong id="display-name">Tu Nombre</strong></p>
+      </div>
+      <div class="logo-box" id="logo-box" onclick="document.getElementById('logo-upload').click()">
+        + Logo
+        <input type="file" id="logo-upload" accept="image/*" style="display:none" onchange="handleLogo(event)">
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="meta-item"><p class="meta-label">Empresa</p><p class="meta-value" id="display-client" contenteditable="true">[Nombre de la Empresa]</p></div>
+      <div class="meta-item"><p class="meta-label">Fecha</p><p class="meta-value" contenteditable="true">Abril 2026</p></div>
+      <div class="meta-item"><p class="meta-label">Sector</p><p class="meta-value" contenteditable="true">[Sector / industria]</p></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="intro" contenteditable="true">
+    Estas 15 preguntas evalúan 3 áreas clave de la gestión financiera de tu negocio. No hay respuestas correctas ni incorrectas — esto nos ayuda a entender dónde estás hoy y dónde podemos mejorar juntos. Puedes llenarlo solo o lo revisamos juntos en nuestra primera reunión.
+  </div>
+
+  <!-- Questions -->
+  <div id="categories"></div>
+
+  <div class="divider"></div>
+
+  <!-- Impact -->
+  <div class="impact">
+    <p class="impact-title">Qué significa esto para tu negocio</p>
+    <div class="impact-items" id="impact-items">
+      <p class="impact-empty" id="impact-empty">Responde las preguntas de arriba y aquí aparecerán los hallazgos relevantes para tu negocio.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Score -->
+  <div class="score-section">
+    <p style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:16px">Tu puntaje</p>
+    <div class="score-ring-wrap" id="score-ring"></div>
+    <p class="score-label" id="score-label" style="background:rgba(0,214,188,.1);color:var(--teal)">Completa el checklist</p>
+    <p class="score-hint" id="score-hint" contenteditable="true">Responde las 15 preguntas y tu puntaje se calculará automáticamente.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Notes -->
+  <div class="notes">
+    <label>Notas del diagnóstico</label>
+    <textarea placeholder="Escribe aquí tus observaciones, hallazgos clave y próximos pasos recomendados para el cliente..."></textarea>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="cta-content">
+      <h2 contenteditable="true">¿Quieres resolver lo que encontramos?</h2>
+      <p contenteditable="true">Agenda una sesión de 15 minutos conmigo. Te muestro en vivo cómo se vería tu negocio con visibilidad financiera en tiempo real.</p>
+      <button class="cta-btn" contenteditable="true">Agenda tu sesión</button>
+      <div class="cta-contact" contenteditable="true">
+        📱 +57 3XX XXX XXXX &bull; 📧 tu@email.com
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span id="footer-name">Tu Nombre</span> · Powered by Alegra · Programa Supercontador
+  </div>
+</div>
+
+<script>
+const cats=[
+  {name:"Tu facturación",icon:"🧾",qs:[
+    {q:"¿Emites factura electrónica de forma automática o todavía lo haces manualmente?",
+     impact:"Facturar manualmente te cuesta horas cada semana que podrías dedicar a atender clientes o vender. Con un sistema en la nube, una factura toma menos de 30 segundos."},
+    {q:"¿Tienes control de cuáles facturas están pendientes de cobro y hace cuánto tiempo?",
+     impact:"Sin visibilidad de tus cuentas por cobrar, hay dinero que ya ganaste pero que se te está escapando. Un sistema con alertas automáticas te avisa antes de que una factura se venza."},
+    {q:"¿Tu sistema de facturación está conectado directamente a la autoridad fiscal de tu país?",
+     impact:"Si tu facturación no está conectada, cada envío requiere un paso manual adicional que puede generar errores o atrasos en el cumplimiento."},
+    {q:"¿Puedes generar y enviar una factura desde tu celular cuando estás fuera de la oficina?",
+     impact:"Si solo puedes facturar desde un computador en la oficina, estás limitando tu capacidad de venta y de respuesta rápida a tus clientes."},
+    {q:"¿Tus facturas se envían automáticamente al cliente por correo al momento de emitirlas?",
+     impact:"Enviar facturas manualmente agrega un paso innecesario al proceso y aumenta la posibilidad de que se pierdan o se retrasen."},
+  ]},
+  {name:"Tu visibilidad financiera",icon:"📊",qs:[
+    {q:"¿Conoces la utilidad real de tu negocio del mes anterior (no el saldo en el banco, la utilidad)?",
+     impact:"Confundir saldo bancario con utilidad es el error financiero más común en Pymes. Sin este dato, las decisiones de gasto e inversión se toman a ciegas."},
+    {q:"¿Tienes un dashboard o tablero donde ves ingresos, gastos y tendencias actualizados?",
+     impact:"Sin un tablero financiero actualizado, cada decisión requiere pedirle datos al contador o armar un Excel. Un dashboard te da la respuesta en segundos."},
+    {q:"¿Puedes ver tus gastos organizados por categoría para identificar dónde se te va el dinero?",
+     impact:"Cuando los gastos no están categorizados, es imposible identificar dónde estás gastando de más. Esa visibilidad suele revelar oportunidades inmediatas de ahorro."},
+    {q:"¿Concilias tus bancos al menos cada semana para saber que tus registros coinciden con la realidad?",
+     impact:"Sin conciliación frecuente, la información financiera se desfasa y las decisiones se toman con datos que no reflejan la realidad del negocio."},
+    {q:"¿Tu información financiera está en la nube y puedes consultarla desde cualquier dispositivo?",
+     impact:"Si tu información vive en un computador local o en un Excel, dependes de estar en la oficina para tomar decisiones. La nube te da acceso desde cualquier lugar, siempre actualizado."},
+  ]},
+  {name:"Tu toma de decisiones",icon:"🎯",qs:[
+    {q:"¿Tomas decisiones de negocio basándote en datos financieros actualizados o en intuición?",
+     impact:"Los negocios que crecen de forma sostenible son los que deciden con datos. La intuición ayuda, pero sin números reales es como manejar sin tablero."},
+    {q:"¿Recibes un reporte financiero de tu contador cada mes que puedas leer y entender en menos de 5 minutos?",
+     impact:"Si tu contador te manda un PDF de 30 páginas que no entiendes, no tienes un reporte: tienes un archivo que nadie lee. Un buen reporte es visual, breve y accionable."},
+    {q:"¿Sabes cuáles son tus productos o servicios más rentables (no los que más vendes, los que más margen te dejan)?",
+     impact:"Muchos negocios concentran esfuerzo en lo que más vende pero menos margen deja. Conocer tu rentabilidad por producto cambia cómo compras, vendes y priorizas."},
+    {q:"¿Proyectas tu flujo de caja para saber si vas a tener liquidez el próximo mes?",
+     impact:"Sin proyección de flujo de caja, las sorpresas de liquidez son inevitables. Saber con anticipación te permite planificar, negociar plazos o buscar financiamiento a tiempo."},
+    {q:"¿Puedes generar reportes financieros sin depender de un Excel manual o de esperar a que tu contador te los mande?",
+     impact:"Depender de un tercero o de un proceso manual para ver tus propios números te quita agilidad. Un sistema automatizado te da la información cuando la necesitas, no cuando alguien la procesa."},
+  ]}
+];
+
+const answers={};
+let totalQs=0;
+
+function buildQuestions(){
+  const container=document.getElementById('categories');
+  container.innerHTML='';
+  cats.forEach((cat,ci)=>{
+    let html=`<div class="cat-section"><div class="cat-header"><span class="cat-icon">${cat.icon}</span><span class="cat-name">${cat.name}</span><span class="cat-count">${cat.qs.length} preguntas</span></div>`;
+    cat.qs.forEach((item,qi)=>{
+      const id=`q${ci}_${qi}`;
+      totalQs++;
+      html+=`<div class="q-row">
+        <span class="q-text" contenteditable="true">${item.q}</span>
+        <div class="q-opts">
+          <span class="q-opt" onclick="pick('${id}','yes',this,${ci},${qi})">Sí</span>
+          <span class="q-opt" onclick="pick('${id}','no',this,${ci},${qi})">No</span>
+          <span class="q-opt" onclick="pick('${id}','na',this,${ci},${qi})">N/A</span>
+        </div>
+        <div class="q-risk" id="risk-${id}"></div>
+      </div>`;
+    });
+    html+=`</div><div class="divider"></div>`;
+    container.innerHTML+=html;
+  });
+}
+
+function pick(id,v,el,ci,qi){
+  el.parentElement.querySelectorAll('.q-opt').forEach(o=>{o.className='q-opt'});
+  el.classList.add(v==='yes'?'sel-yes':v==='no'?'sel-no':'sel-na');
+  answers[id]={value:v,ci,qi};
+  const risk=document.getElementById('risk-'+id);
+  risk.style.background=v==='yes'?'var(--ok)':v==='no'?'var(--red)':'var(--muted)';
+  updateScore();
+  updateImpact();
+}
+
+function updateScore(){
+  let yes=0;
+  for(const a of Object.values(answers)){if(a.value==='yes')yes++}
+  const total=15;
+  const pct=Math.round((yes/total)*100);
+
+  // Draw ring
+  const r=58,circ=2*Math.PI*r;
+  const offset=circ-(pct/100)*circ;
+  const color=yes>=12?'var(--ok)':yes>=8?'var(--amber)':'var(--red)';
+  document.getElementById('score-ring').innerHTML=`
+    <svg width="160" height="160" viewBox="0 0 160 160">
+      <circle cx="80" cy="80" r="${r}" fill="none" stroke="rgba(0,214,188,.1)" stroke-width="10"/>
+      <circle cx="80" cy="80" r="${r}" fill="none" stroke="${color}" stroke-width="10"
+        stroke-linecap="round" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"
+        transform="rotate(-90 80 80)" style="transition:stroke-dashoffset .8s ease"/>
+      <text x="80" y="72" text-anchor="middle" fill="var(--white)" style="font-family:Lexend;font-size:38px;font-weight:800">${yes}</text>
+      <text x="80" y="96" text-anchor="middle" fill="var(--muted)" style="font-family:Inter;font-size:14px">de ${total}</text>
+    </svg>`;
+
+  const label=document.getElementById('score-label');
+  const hint=document.getElementById('score-hint');
+  if(Object.keys(answers).length===0){
+    label.textContent='Completa el checklist';
+    label.style.background='rgba(0,214,188,.1)';label.style.color='var(--teal)';
+    hint.textContent='Responde las 15 preguntas y tu puntaje se calculará automáticamente.';
+  }else if(yes<=7){
+    label.textContent='Necesitas acción inmediata';
+    label.style.background='rgba(239,68,68,.12)';label.style.color='var(--red)';
+    hint.textContent='Tu negocio está operando sin la visibilidad y el orden que necesita para crecer. La buena noticia: cada uno de estos puntos tiene solución concreta y rápida.';
+  }else if(yes<=11){
+    label.textContent='Hay oportunidades importantes de mejora';
+    label.style.background='rgba(245,158,11,.12)';label.style.color='var(--amber)';
+    hint.textContent='Tienes una base, pero hay áreas donde estás dejando tiempo y claridad sobre la mesa. Con los ajustes correctos, tu gestión puede dar un salto importante.';
+  }else{
+    label.textContent='Tu negocio tiene buena base';
+    label.style.background='rgba(34,197,94,.12)';label.style.color='var(--ok)';
+    hint.textContent='Tu gestión financiera está en buen camino. Aún hay oportunidades para optimizar y automatizar, pero partes de una posición sólida.';
+  }
+}
+
+function updateImpact(){
+  const container=document.getElementById('impact-items');
+  const empty=document.getElementById('impact-empty');
+  const noAnswers=Object.values(answers).filter(a=>a.value==='no');
+
+  if(noAnswers.length===0){
+    container.innerHTML='<p class="impact-empty" id="impact-empty">Responde las preguntas de arriba y aquí aparecerán los hallazgos relevantes para tu negocio.</p>';
+    return;
+  }
+
+  let html='';
+  noAnswers.forEach(a=>{
+    const item=cats[a.ci].qs[a.qi];
+    html+=`<div class="impact-item visible">
+      <div class="impact-dot" style="background:var(--amber)"></div>
+      <span>${item.impact}</span>
+    </div>`;
+  });
+  container.innerHTML=html;
+}
+
+// Init
+buildQuestions();
+updateScore();
+
+// Meta updates
+function updateMeta(){
+  const n=document.getElementById('cfg-name').value;
+  const c=document.getElementById('cfg-client').value;
+  document.getElementById('display-name').textContent=n;
+  document.getElementById('display-client').textContent=c;
+  document.getElementById('footer-name').textContent=n;
+}
+
+function handleLogo(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const box=document.getElementById('logo-box');
+    box.innerHTML='<img src="'+ev.target.result+'" alt="Logo">';
+    box.style.border='none';
+  };
+  r.readAsDataURL(f);
+}
+
+function downloadPDF(){
+  // Inject a <style> tag with the current CSS variable values so print captures them
+  const root=document.documentElement;
+  const cv=v=>getComputedStyle(root).getPropertyValue(v).trim();
+  const sid='print-override';
+  let s=document.getElementById(sid);
+  if(!s){s=document.createElement('style');s.id=sid;document.head.appendChild(s);}
+  s.textContent=`@media print{
+    :root{
+      --bg:${cv('--bg')};
+      --bg2:${cv('--bg2')};
+      --bg3:${cv('--bg3')};
+      --teal:${cv('--teal')};
+      --green:${cv('--green')};
+      --vibrant:${cv('--vibrant')};
+      --white:${cv('--white')};
+      --light:${cv('--light')};
+      --muted:${cv('--muted')};
+      --card:${cv('--card')};
+      --card-border:${cv('--card-border')};
+      --glow:${cv('--glow')};
+    }
+    body{background:${cv('--bg')}!important;}
+  }`;
+  document.getElementById('toolbar').style.display='none';
+  window.print();
+  setTimeout(()=>{document.getElementById('toolbar').style.display=''},800);
+}
+
+function toggleCustom(){
+  const p=document.getElementById('custom-panel');
+  p.style.display=p.style.display==='none'?'flex':'none';
+}
+
+const themes={
+  supercontador:{bg:'#0B1929',accent:'#00D6BC',card:'#132840',text:'#FFFFFF',muted:'#94A3B8'},
+  clasico:{bg:'#FFFFFF',accent:'#00D6BC',card:'#F1F5F9',text:'#18283F',muted:'#64748B'},
+  azul:{bg:'#0F172A',accent:'#3B82F6',card:'#1E293B',text:'#FFFFFF',muted:'#94A3B8'},
+  verde:{bg:'#FFFFFF',accent:'#059669',card:'#F0FDF4',text:'#1A1A2E',muted:'#6B7280'},
+};
+
+function setColors(bg,accent,card,text,muted){
+  const root=document.documentElement;
+  root.style.setProperty('--bg',bg);
+  root.style.setProperty('--card',card);
+  root.style.setProperty('--white',text);
+  root.style.setProperty('--light',text==='#FFFFFF'?'#CBD5E1':text);
+  root.style.setProperty('--muted',muted);
+  root.style.setProperty('--teal',accent);
+  root.style.setProperty('--vibrant',accent);
+  root.style.setProperty('--card-border',accent+'26');
+  root.style.setProperty('--glow',accent+'14');
+  document.getElementById('c-bg').value=bg;
+  document.getElementById('c-accent').value=accent;
+  document.getElementById('c-card').value=card;
+  document.getElementById('c-text').value=text;
+  document.getElementById('c-muted').value=muted;
+  document.getElementById('c-bg-hex').textContent=bg;
+  document.getElementById('c-accent-hex').textContent=accent;
+  document.getElementById('c-card-hex').textContent=card;
+  document.getElementById('c-text-hex').textContent=text;
+  document.getElementById('c-muted-hex').textContent=muted;
+}
+
+function applyTheme(name){
+  if(name==='custom'){document.getElementById('custom-panel').style.display='flex';return}
+  document.getElementById('custom-panel').style.display='none';
+  const t=themes[name];
+  setColors(t.bg,t.accent,t.card,t.text,t.muted);
+}
+
+function applyCustom(){
+  setColors(
+    document.getElementById('c-bg').value,
+    document.getElementById('c-accent').value,
+    document.getElementById('c-card').value,
+    document.getElementById('c-text').value,
+    document.getElementById('c-muted').value
+  );
+  document.getElementById('theme-select').value='custom';
+}
+</script>
+</body>
+</html>
