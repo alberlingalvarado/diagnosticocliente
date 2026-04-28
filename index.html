@@ -72,7 +72,8 @@ h1,h2,h3,.headline{font-family:'Lexend',sans-serif}
 .q-row:hover{background:rgba(0,214,188,.05);border-color:var(--card-border)}
 .q-text{font-size:14px;line-height:1.6;color:var(--light)}
 .q-opts{display:flex;gap:4px}
-.q-opt{padding:5px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid rgba(0,214,188,.15);background:transparent;color:var(--muted);transition:all .15s;user-select:none;font-family:inherit}
+.q-opt{padding:5px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid rgba(0,214,188,.15);background:transparent;color:var(--muted);transition:all .2s;user-select:none;font-family:inherit;outline:none}
+.q-opt:focus{box-shadow:0 0 0 2px var(--teal)}
 .q-opt:hover{border-color:rgba(0,214,188,.4);color:var(--light)}
 .q-opt.sel-yes{background:rgba(34,197,94,.12);border-color:var(--ok);color:var(--ok)}
 .q-opt.sel-no{background:rgba(239,68,68,.12);border-color:var(--red);color:var(--red)}
@@ -118,7 +119,7 @@ h1,h2,h3,.headline{font-family:'Lexend',sans-serif}
 
 @media print{
   .toolbar{display:none!important}
-  body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  html, body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;transition:none!important}
   .page{max-width:100%}
   .cat-section{page-break-inside:avoid}
   .score-section{page-break-inside:avoid}
@@ -293,9 +294,9 @@ function buildQuestions(){
       html+=`<div class="q-row">
         <span class="q-text" contenteditable="true">${item.q}</span>
         <div class="q-opts">
-          <span class="q-opt" onclick="pick('${id}','yes',this,${ci},${qi})">Sí</span>
-          <span class="q-opt" onclick="pick('${id}','no',this,${ci},${qi})">No</span>
-          <span class="q-opt" onclick="pick('${id}','na',this,${ci},${qi})">N/A</span>
+          <button class="q-opt" onclick="pick('${id}','yes',this,${ci},${qi})">Sí</button>
+          <button class="q-opt" onclick="pick('${id}','no',this,${ci},${qi})">No</button>
+          <button class="q-opt" onclick="pick('${id}','na',this,${ci},${qi})">N/A</button>
         </div>
         <div class="q-risk" id="risk-${id}"></div>
       </div>`;
@@ -313,6 +314,7 @@ function pick(id,v,el,ci,qi){
   risk.style.background=v==='yes'?'var(--ok)':v==='no'?'var(--red)':'var(--muted)';
   updateScore();
   updateImpact();
+  saveToLocal();
 }
 
 function updateScore(){
@@ -381,6 +383,15 @@ function updateImpact(){
 buildQuestions();
 updateScore();
 
+// Persistencia
+function saveToLocal(){
+  localStorage.setItem('diag_answers', JSON.stringify(answers));
+}
+function loadLocal(){
+  const saved = localStorage.getItem('diag_answers');
+  if(saved) { /* Lógica para restaurar estados visuales */ }
+}
+
 // Meta updates
 function updateMeta(){
   const n=document.getElementById('cfg-name').value;
@@ -408,26 +419,31 @@ function downloadPDF(){
   const sid='print-override';
   let s=document.getElementById(sid);
   if(!s){s=document.createElement('style');s.id=sid;document.head.appendChild(s);}
-  s.textContent=`@media print{
-    :root{
-      --bg:${cv('--bg')};
-      --bg2:${cv('--bg2')};
-      --bg3:${cv('--bg3')};
-      --teal:${cv('--teal')};
-      --green:${cv('--green')};
-      --vibrant:${cv('--vibrant')};
-      --white:${cv('--white')};
-      --light:${cv('--light')};
-      --muted:${cv('--muted')};
-      --card:${cv('--card')};
-      --card-border:${cv('--card-border')};
-      --glow:${cv('--glow')};
-    }
-    body{background:${cv('--bg')}!important;}
-  }`;
+  
+  const bg = cv('--bg');
+  const light = cv('--light');
+
+  s.textContent=`
+    @media print {
+      :root {
+        --bg: ${bg} !important;
+        --bg2: ${bg} !important;
+        --bg3: ${bg} !important;
+        --light: ${light} !important;
+      }
+      html, body {
+        background-color: ${bg} !important;
+        color: ${light} !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }`;
+
   document.getElementById('toolbar').style.display='none';
-  window.print();
-  setTimeout(()=>{document.getElementById('toolbar').style.display=''},800);
+  setTimeout(() => {
+    window.print();
+    setTimeout(()=>{document.getElementById('toolbar').style.display=''}, 800);
+  }, 100);
 }
 
 function toggleCustom(){
@@ -445,6 +461,8 @@ const themes={
 function setColors(bg,accent,card,text,muted){
   const root=document.documentElement;
   root.style.setProperty('--bg',bg);
+  root.style.setProperty('--bg2',bg);
+  root.style.setProperty('--bg3',bg);
   root.style.setProperty('--card',card);
   root.style.setProperty('--white',text);
   root.style.setProperty('--light',text==='#FFFFFF'?'#CBD5E1':text);
